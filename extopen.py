@@ -1,3 +1,24 @@
+"""
+#######
+Extopen
+#######
+
+Provides a cross platform set of tools for opening files externally with the default registered application for
+the current operating system.
+
+The currently supported operating systems are Windows NT (eg NT, XP onwards), OSX, Linux.
+
+Please report any bugs/submit patches to: https://github.com/timsavage/extopen/
+
+Usage:
+
+    >>> import extopen
+    >>> extopen.is_supported()
+    True
+    >>> extopen.file("/path/to/my/file")
+    >>> extopen.directory("/home/")
+    
+"""
 import os
 import subprocess
 import sys
@@ -31,6 +52,8 @@ def file(path):
     Open a file in with the defualt application.
 
     :param path: Path of the file to open.
+    :raises OSError: If extfile is not supported on this OS.
+    :raises IOError: If file is not found (or is a directory)
 
     """
     if _execute is None: 
@@ -39,7 +62,7 @@ def file(path):
     if os.path.isfile(path):
         _execute(path)
     else:
-        raise IOError("File `{}` not found".format(path))
+        raise IOError("File `{}` not found or is a directory.".format(path))
 
 
 def directory(path):
@@ -47,6 +70,8 @@ def directory(path):
     Open a directory with the file browser.
 
     :param path: Path of the directory to open.
+    :raises OSError: If extfile is not supported on this OS.
+    :raises IOError: If directory is not found (or is a file)
 
     """
     if _execute is None: 
@@ -55,5 +80,5 @@ def directory(path):
     if os.path.isdir(path):
         _execute(path)
     else:
-        raise IOError("Directory `{}` not found".format(path))
+        raise IOError("Directory `{}` not found of is a file.".format(path))
 
