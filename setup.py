@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name = 'extopen',
@@ -23,5 +23,8 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
-    ]
+    ],
+    zip_safe = True,
+
+    py_modules = ['extopen']
 )
