@@ -106,7 +106,7 @@ def directory(p):
 if __name__ == '__main__':
     if not is_supported():
         print("extopen is not supported by this OS.", file=sys.stderr)
-        exit(42)
+        exit(13)  # Unlucky for some...
 
     if len(sys.argv) != 2:
         print("Usage: {} PATH".format(sys.argv[0]), file=sys.stderr)
