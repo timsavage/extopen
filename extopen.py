@@ -15,70 +15,106 @@ Usage:
     >>> import extopen
     >>> extopen.is_supported()
     True
-    >>> extopen.file("/path/to/my/file")
+    >>> extopen.file("/p/to/my/file")
     >>> extopen.directory("/home/")
     
 """
+from __future__ import print_function
 import os
 import subprocess
 import sys
 
 
 if sys.platform.startswith('darwin'):
-    def _execute(path):
-        subprocess.call(('open', path))
-
+    def _execute(p):
+        subprocess.call(('open', p))
 elif os.name == 'nt':
-    def _execute(path):
-        os.startfile(path)
-
+    def _execute(p):
+        os.startfile(p)
 elif os.name == 'posix':
-    def _execute(path):
-        subprocess.call(('xdg-open', path))
-
+    def _execute(p):
+        subprocess.call(('xdg-open', p))
 else:
     _execute = None
 
 
+class NotSupported(Exception):
+    pass
+
+
 def is_supported():
     """
-    The current OS is a supported by open with
+    The current OS is a supported by extopen.
     """
     return _execute is not None
 
 
-def file(path):
+def path(p):
     """
-    Open a file in with the defualt application.
+    Open a path with the default application.
 
-    :param path: Path of the file to open.
-    :raises OSError: If extfile is not supported on this OS.
+    :param p: Path to open (file or directory).
+    :raises IOError: If the p is not found.
+    :raises NotSupported: If extopen is not supported on this OS.
+
+    """
+    if _execute is None:
+        raise NotSupported("extopen is not supported by the current OS.")
+    
+    if not os.path.exists(p):
+        raise IOError("Path `{}` not found.".format(p))
+
+    return _execute(p)
+
+
+def file(p):
+    """
+    Open a file with the default application.
+
+    :param p: Path of the file to open.
     :raises IOError: If file is not found (or is a directory)
+    :raises NotSupported: If extopen is not supported on this OS.
 
     """
     if _execute is None: 
-        raise OSError("Open with is not supported on this OS")
+        raise NotSupported("extopen is not supported by the current OS.")
 
-    if os.path.isfile(path):
-        _execute(path)
-    else:
-        raise IOError("File `{}` not found or is a directory.".format(path))
+    if not os.path.isfile(p):
+        raise IOError("File `{}` not found or is a directory.".format(p))
+
+    return _execute(p)
 
 
-def directory(path):
+def directory(p):
     """
     Open a directory with the file browser.
 
-    :param path: Path of the directory to open.
-    :raises OSError: If extfile is not supported on this OS.
+    :param p: Path of the directory to open.
     :raises IOError: If directory is not found (or is a file)
+    :raises NotSupported: If extopen is not supported on this OS.
 
     """
     if _execute is None: 
-        raise OSError("Open with is not supported on this OS")
+        raise NotSupported("Open with is not supported on this OS")
 
-    if os.path.isdir(path):
-        _execute(path)
-    else:
-        raise IOError("Directory `{}` not found of is a file.".format(path))
+    if not os.path.isdir(p):
+        raise IOError("Directory `{}` not found of is a file.".format(p))
+
+    return _execute(p)
+
+
+if __name__ == '__main__':
+    if not is_supported():
+        print("extopen is not supported by this OS.", file=sys.stderr)
+        exit(42)
+
+    if len(sys.argv) != 2:
+        print("Usage: {} PATH".format(sys.argv[0]), file=sys.stderr)
+        exit(1)
+
+    try:
+        path(sys.argv[1])
+    except IOError as ex:
+        print(str(ex), file=sys.stderr)
+        exit(2)
 
