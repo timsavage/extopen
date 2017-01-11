@@ -10,7 +10,7 @@ The currently supported operating systems are Windows NT (eg NT, XP onwards), OS
 
 Please report any bugs/submit patches to: https://github.com/timsavage/extopen/
 
-Usage:
+Usage::
 
     >>> import extopen
     >>> extopen.is_supported()

@@ -4,6 +4,7 @@ setup(
     name = 'extopen',
     version = '0.1',
     description = "Cross platform helper for opening a file with the default external application.",
+    long_description = open('README.rst').read(),
     url='https://github.com/timsavage/extopen',
     author = 'Tim Savage',
     author_email = 'tim@savage.company',
