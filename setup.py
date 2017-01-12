@@ -9,6 +9,7 @@ setup(
     author = 'Tim Savage',
     author_email = 'tim@savage.company',
     license = 'BSD',
+    platforms = 'Posix; MacOS X; Windows',
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
